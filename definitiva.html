@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora UPAO by Willian Chacon</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-image: url('upao.jpg'); /* Ajusta el nombre de la imagen */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            box-sizing: border-box;
+        }
+
+        #calculadora {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+            color: white; /* Añadido para asegurar que el texto sea visible */
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input {
+            width: calc(100% - 16px);
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+
+        #resultado {
+            margin-top: 20px;
+        }
+
+        .rojo {
+            color: red;
+        }
+
+        .azul {
+            color: blue;
+        }
+
+        /* Estilo para el área de resultados */
+        #resultado {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            color: black; /* Cambiado a color negro para mejorar visibilidad */
+        }
+    </style>
+</head>
+<body>
+
+    <div id="calculadora">
+        <h2>Calculadora UPAO by Willian Chacon</h2>
+
+        <label for="componente1">Evaluación de Proceso 1 (25%)</label>
+        <input type="number" id="componente1" min="0" max="20" step="0.1" oninput="calcularNota()">
+
+        <label for="parcial">Evaluación Parcial (20%)</label>
+        <input type="number" id="parcial" min="0" max="20" step="0.1" oninput="calcularNota()">
+
+        <label for="componente2">Evaluación de Proceso 2 (30%)</label>
+        <input type="number" id="componente2" min="0" max="20" step="0.1" oninput="calcularNota()">
+
+        <label for="final">Evaluación Final (25%)</label>
+        <input type="number" id="final" min="0" max="20" step="0.1" oninput="calcularNota()">
+
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        function calcularNota() {
+            var componente1 = parseFloat(document.getElementById('componente1').value) || 0;
+            var parcial = parseFloat(document.getElementById('parcial').value) || 0;
+            var componente2 = parseFloat(document.getElementById('componente2').value) || 0;
+            var final = parseFloat(document.getElementById('final').value) || 0;
+
+            // Limitar notas de componentes a 20
+            componente1 = Math.min(componente1, 20);
+            parcial = Math.min(parcial, 20);
+            componente2 = Math.min(componente2, 20);
+            final = Math.min(final, 20);
+
+            var porcentajeComponente1 = 0.25;
+            var porcentajeParcial = 0.2;
+            var porcentajeComponente2 = 0.3;
+            var porcentajeFinal = 0.25;
+
+            var puntajeAcumulado = (componente1 * porcentajeComponente1) + (parcial * porcentajeParcial) +
+                                  (componente2 * porcentajeComponente2) + (final * porcentajeFinal);
+
+            var mensaje = puntajeAcumulado < 10.5 ? 'DESAPROBADO' : 'APROBADO';
+            var faltaParaAprobar = puntajeAcumulado >= 10.5 ? 0 : (10.5 - puntajeAcumulado).toFixed(2);
+
+            var notaNecesariaFinal = 0;
+
+            // Calcular la nota necesaria en el final solo si se han ingresado las notas de los tres primeros componentes
+            if (componente1 > 0 && parcial > 0 && componente2 > 0) {
+                notaNecesariaFinal = faltaParaAprobar / porcentajeFinal;
+            }
+
+            var resultadoHTML = `
+                <p>Puntaje Acumulado: <span class="${puntajeAcumulado < 10.5 ? 'rojo' : 'azul'}">${puntajeAcumulado.toFixed(2)}</span></p>
+                <p>Falta para Aprobar: ${faltaParaAprobar}</p>
+                <p>Resultado: <span class="${mensaje === 'DESAPROBADO' ? 'rojo' : 'azul'}">${mensaje}</span></p>
+                ${notaNecesariaFinal > 0 ? `<p>Nota necesaria en el Final: ${notaNecesariaFinal.toFixed(2)}</p>` : ''}
+            `;
+
+            document.getElementById('resultado').innerHTML = resultadoHTML;
+        }
+    </script>
+
+</body>
+</html>
